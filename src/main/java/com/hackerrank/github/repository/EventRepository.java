@@ -1,20 +1,22 @@
 package com.hackerrank.github.repository;
 
-import com.hackerrank.github.repository.model.EventEntity;
+import com.hackerrank.github.model.EventEntity;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface EventRepository extends org.springframework.data.repository.Repository<EventEntity, Long>{
+public interface EventRepository extends org.springframework.data.repository.CrudRepository<EventEntity, Long> {
 
     void deleteAll();
 
-    EventEntity findOne(Long id);
-
     List<EventEntity> findAll();
 
-    void save(EventEntity event);
+    @Query("select e from EventEntity e inner join fetch e.actorEntity a inner join fetch e.repoEntity where a.id = :actorID order by a.id")
+    List<EventEntity> findByActorId(Long actorID);
 
-    List<EventEntity> findByActorEntityId(Long id);
+    EventEntity findOne(Long id);
+
+    void delete(Long id);
 }

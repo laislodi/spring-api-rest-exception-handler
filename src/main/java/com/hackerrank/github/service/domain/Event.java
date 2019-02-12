@@ -1,5 +1,8 @@
 package com.hackerrank.github.service.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -7,16 +10,20 @@ public class Event {
 
     private Long id;
     private String type;
-    private LocalDateTime createdAt;
     private Actor actor;
     private Repo repo;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty("created_at")
+    private LocalDateTime createdAt;
 
     public Event() {
     }
 
-    public Event(Long id, String type, LocalDateTime createdAt) {
+    public Event(Long id, String type, Actor actor, Repo repo, LocalDateTime createdAt) {
         this.id = id;
         this.type = type;
+        this.actor = actor;
+        this.repo = repo;
         this.createdAt = createdAt;
     }
 
@@ -36,14 +43,6 @@ public class Event {
         this.type = type;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public Actor getActor() {
         return actor;
     }
@@ -60,14 +59,22 @@ public class Event {
         this.repo = repo;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
-                ", createdAt=" + createdAt +
                 ", actor=" + actor +
                 ", repo=" + repo +
+                ", createdAt=" + createdAt +
                 '}';
     }
 
@@ -78,14 +85,13 @@ public class Event {
         Event event = (Event) o;
         return Objects.equals(id, event.id) &&
                 Objects.equals(type, event.type) &&
-                Objects.equals(createdAt, event.createdAt) &&
                 Objects.equals(actor, event.actor) &&
-                Objects.equals(repo, event.repo);
+                Objects.equals(repo, event.repo) &&
+                Objects.equals(createdAt, event.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, createdAt, actor, repo);
+        return Objects.hash(id, type, actor, repo, createdAt);
     }
 }
-

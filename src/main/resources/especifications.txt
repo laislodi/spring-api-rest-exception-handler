@@ -1,0 +1,79 @@
+Java Spring Boot: Github Dataset API
+
+In this challenge, you are part of a team building a git eventEntity tracking platform. One requirement is for a REST API
+service to provide events information using the Spring Boot framework. You will need to add functionality to add and
+delete information as well as to perform some queries. You'll be dealing with typical information for git eventEntity data
+like repository, actor, eventEntity type, etc. The team has come up with a set of requirements including filtering and
+ordering requirements, response codes and error messages for the queries you must implement.
+
+The definitions and a detailed requirements list follow. You will be graded on whether your application performs data
+retrieval and manipulation based on given use cases exactly as described in the requirements.
+
+Each eventEntity data is a JSON entry with the following keys:
+
+- id: This is the eventEntity unique ID.
+- type: This is the eventEntity type.
+- actor: The actor responsible for the eventEntity. The actor itself is a JSON entry consisting of following fields:
+  - id: This is the actor unique ID.
+  - login: This is the actor unique login ID.
+  - avatar_url: This is the actor avatar URL.
+- repo: The repository to which this eventEntity is associated with. The repo itself is a JSON entry consisting of following
+fields:
+  - id: This is the repo unique ID.
+  - name: This is the repo name.
+  - url: This is the repo URL.
+- created_at: This is the timestamp for the eventEntity creation given in the format yyyy-MM-dd HH:mm:ss. The timezone is UTC
++0.
+
+{
+  "id":4055191679,
+  "type":"PushEvent",
+  "actor":{
+    "id":2790311,
+    "login":"daniel33",
+    "avatar_url":"https://avatars.com/2790311"
+  },
+  "repo":{
+    "id":352806,
+    "name":"johnbolton/exercitationem",
+    "url":"https://github.com/johnbolton/exercitationem"
+  },
+  "created_at":"2015-10-03 06:13:31"
+}
+
+The REST service should implement the following functionalities:
+
+1.(OK) Erasing all the events: The service should be able to erase all the events by the DELETE request at /erase. The HTTP
+response code should be 200.
+
+2.(OK) Adding new events: The service should be able to add a new eventEntity by the POST request at /events. The eventEntity JSON is sent
+in the request body. If an eventEntity with the same id already exists then the HTTP response code should be 400, otherwise,
+the response code should be 201.
+
+3.(OK) Returning all the events: The service should be able to return the JSON array of all the events by the GET request at
+/events. The HTTP response code should be 200. The JSON array should be sorted in ascending order by eventEntity ID.
+
+4.(OK) Returning the eventEntity records filtered by the actor ID: The service should be able to return the JSON array of all the
+events which are performed by the actor ID by the GET request at /events/actorEntities/{actorID}. If the requested actor does
+not exist then HTTP response code should be 404, otherwise, the response code should be 200. The JSON array should be
+sorted in ascending order by eventEntity ID.
+
+5.(OK) Updating the avatar URL of the actor: The service should be able to update the avatar URL of the actor by the PUT
+request at /actorEntities. The actor JSON is sent in the request body. If the actor with the id does not exist then the
+response code should be 404, or if there are other fields being updated for the actor then the HTTP response code
+should be 400, otherwise, the response code should be 200.
+
+6.(OK) Returning the actor records ordered by the total number of events: The service should be able to return the JSON array
+of all the actorEntities sorted by the total number of associated events with each actor in descending order by the GET
+request at /actorEntities. If there are more than one actorEntities with the same number of events, then order them by the timestamp
+of the latest eventEntity in the descending order. If more than one actorEntities have the same timestamp for the latest eventEntity, then
+order them by the alphabetical order of login. The HTTP response code should be 200.
+
+7. Returning the actor records ordered by the maximum streak: The service should be able to return the JSON array of all
+the actorEntities sorted by the maximum streak (i.e., the total number of consecutive days actor has pushed an eventEntity to the
+system) in descending order by the GET request at /actorEntities/streak. If there are more than one actorEntities with the same
+maximum streak, then order them by the timestamp of the latest eventEntity in the descending order. If more than one actorEntities
+have the same timestamp for the latest eventEntity, then order them by the alphabetical order of login. The HTTP response
+code should be 200.
+
+mvn clean test; cat target/customReports/result.txt

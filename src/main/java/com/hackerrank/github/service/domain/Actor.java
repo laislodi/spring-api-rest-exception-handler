@@ -1,11 +1,15 @@
 package com.hackerrank.github.service.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
 import java.util.Objects;
 
 public class Actor {
 
     private Long id;
     private String login;
+    @JsonProperty("avatar_url")
     private String avatarUrl;
 
     public Actor() {

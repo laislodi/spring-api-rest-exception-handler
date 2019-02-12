@@ -1,7 +1,9 @@
 package com.hackerrank.github.exception;
 
-public class ExistentEventException extends RuntimeException implements BadRequestException {
+public class ExistentEventException extends RuntimeException {
 
-    public ExistentEventException() {
+    public ExistentEventException(String message) {
+        super(message);
     }
+
 }
