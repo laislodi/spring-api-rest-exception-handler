@@ -32,8 +32,7 @@ public class GithubApiActorRestController {
 
     @PutMapping("/actors")
     @ResponseBody
-    public void updateActor(@RequestBody Actor actor) {
-        gitHubApiRestActorService.save(actor);
+    public void updateActor(@RequestBody Actor actor) { gitHubApiRestActorService.save(actor);
     }
 
     @GetMapping("/actors")

@@ -70,6 +70,17 @@ public class GitHubApiRestActorService {
             }
         });
 
+        for (ActorEntity e : actorEntityList) {
+            List<EventEntity> eventEntityList = e.getEventEntityList();
+            eventEntityList.sort(Comparator.comparing(EventEntity::getCreatedAt));
+
+            System.out.println("Actor ID: " + e.getId() +
+                    " - login: " + e.getLogin() +
+                    " - URL: " + e.getAvatarUrl() +
+                    " - Timestamp" + eventEntityList.get(eventEntityList.size() - 1).getCreatedAt() );
+            System.out.println("Number of Events: " + e.getEventEntityList().size());
+        }
+
         return actorConverter.toDomain(actorEntityList);
     }
 

@@ -3,6 +3,7 @@ package com.hackerrank.github.controller;
 import com.hackerrank.github.service.GitHubApiRestEventService;
 import com.hackerrank.github.service.domain.Event;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class GithubApiEventRestController {
     }
 
     @PostMapping("/events")
-    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     public void saveEvent(@RequestBody Event eventEntity)  {
         gitHubApiRestEventService.saveEvent(eventEntity);
     }

@@ -2,6 +2,7 @@ package com.hackerrank.github.repository;
 
 import com.hackerrank.github.model.EventEntity;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,8 +14,8 @@ public interface EventRepository extends org.springframework.data.repository.Cru
 
     List<EventEntity> findAll();
 
-    @Query("select e from EventEntity e inner join fetch e.actorEntity a inner join fetch e.repoEntity where a.id = :actorID order by a.id")
-    List<EventEntity> findByActorId(Long actorID);
+    @Query("select e from EventEntity e inner join fetch e.actorEntity a inner join fetch e.repoEntity where a.id = :actorId order by a.id")
+    List<EventEntity> findByActorId(@Param("actorId") Long actorID);
 
     EventEntity findOne(Long id);
 

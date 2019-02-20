@@ -75,6 +75,7 @@ public class GitHubApiRestEventService {
     public List<Event> findAll() {
         return eventConverter.toDomain(eventRepository.findAll());
     }
+
     public List<Event> findEventsByActor(Long actorID) {
         List<EventEntity> eventEntityList = eventRepository.findByActorId(actorID);
 
