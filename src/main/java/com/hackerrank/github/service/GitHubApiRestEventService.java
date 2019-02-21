@@ -3,33 +3,26 @@ package com.hackerrank.github.service;
 import com.hackerrank.github.exception.EventNotFoundException;
 import com.hackerrank.github.exception.ExistentEventException;
 import com.hackerrank.github.model.EventEntity;
-import com.hackerrank.github.repository.ActorRepository;
 import com.hackerrank.github.repository.EventRepository;
-import com.hackerrank.github.repository.RepoRepository;
 import com.hackerrank.github.service.converter.domainconverterimpl.EventConverter;
 import com.hackerrank.github.service.domain.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class GitHubApiRestEventService {
 
+    private static final String ACTOR_NOT_FOUND_MESSAGE = "The actor id = {0} can not be found.";
+    private static final String EVENTO_EXISTE_MESSAGE = "O evento {0} já existe.";
     private final EventRepository eventRepository;
-    private final ActorRepository actorRepository;
-    private final RepoRepository repoRepository;
     private final EventConverter eventConverter;
 
     @Autowired
-    public GitHubApiRestEventService(EventRepository eventRepository,
-                                     ActorRepository actorRepository,
-                                     RepoRepository repoRepository,
-                                     EventConverter eventConverter) {
+    public GitHubApiRestEventService(EventRepository eventRepository, EventConverter eventConverter) {
         this.eventRepository = eventRepository;
-        this.actorRepository = actorRepository;
-        this.repoRepository = repoRepository;
         this.eventConverter = eventConverter;
     }
 
@@ -38,24 +31,12 @@ public class GitHubApiRestEventService {
     }
 
     public void saveEvent(Event event) {
-        EventEntity e = eventRepository.findOne(event.getId());
-
-        if (Objects.nonNull(e)) {
-            throw new ExistentEventException("O evento " + e.getId() + " já existe.");
+        if (eventRepository.exists(event.getId())) {
+            throw new ExistentEventException(MessageFormat.format(EVENTO_EXISTE_MESSAGE, event.getId()));
         }
 
         EventEntity eventEntity = eventConverter.toEntity(event);
         eventRepository.save(eventEntity);
-    }
-
-    public void createAllEvents(List<Event> eventList) {
-        List<EventEntity> eventEntityList =  eventConverter.toEntity(eventList);
-
-        for ( EventEntity e : eventEntityList) {
-            actorRepository.save(e.getActorEntity());
-            repoRepository.save(e.getRepoEntity());
-            eventRepository.save(e);
-        }
     }
 
     public List<Event> findAll() {
@@ -65,12 +46,12 @@ public class GitHubApiRestEventService {
     public List<Event> findEventsByActor(Long actorID) {
         List<EventEntity> eventEntityList = eventRepository.findByActorId(actorID);
 
-        List<Event> eventList;
-        eventList = eventConverter.toDomain(eventEntityList);
+        List<Event> eventList = eventConverter.toDomain(eventEntityList);
 
-        if (eventEntityList.size() == 0) {
-            throw new EventNotFoundException("The actor id = " + actorID + " can not be found.");
+        if (eventEntityList.isEmpty()) {
+            throw new EventNotFoundException(MessageFormat.format(ACTOR_NOT_FOUND_MESSAGE, actorID));
         }
+
         return eventList;
     }
 

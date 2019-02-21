@@ -12,24 +12,26 @@ import com.hackerrank.github.service.domain.Actor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GitHubApiRestActorService {
 
+    private static final String ACTOR_NOT_EXISTS_MESSAGE = "This actor id (id = {0}) does not exists.";
+    private static final String ACTOR_ALREADY_EXISTS_MESSAGE = "It is not possible to change this actor (id = {0}) already exists in the database.";
     private final EventRepository eventRepository;
     private final ActorRepository actorRepository;
     private final RepoRepository repoRepository;
     private final ActorConverter actorConverter;
 
     @Autowired
-    public GitHubApiRestActorService(EventRepository eventRepository,
-                                     ActorRepository actorRepository,
-                                     RepoRepository repoRepository,
-                                     ActorConverter actorConverter) {
+    public GitHubApiRestActorService(EventRepository eventRepository, ActorRepository actorRepository,
+            RepoRepository repoRepository, ActorConverter actorConverter) {
         this.eventRepository = eventRepository;
         this.actorRepository = actorRepository;
         this.repoRepository = repoRepository;
@@ -40,37 +42,30 @@ public class GitHubApiRestActorService {
         Long id = actor.getId();
         ActorEntity actorEntity = actorRepository.findOne(id);
 
-        if (actorEntity == null ) {
-            throw new ActorNotFoundException("This actor id (id = " + id + ") does not exists.");
+        if (Objects.isNull(actorEntity)) {
+            throw new ActorNotFoundException(MessageFormat.format(ACTOR_NOT_EXISTS_MESSAGE, id));
         }
 
-        if ( actorEntity.getLogin().equals(actor.getLogin()) && actorEntity.getId().equals(actor.getId()) ) {
+        if ( actorEntity.getLogin().equals(actor.getLogin())) {
             actorEntity.setAvatarUrl(actor.getAvatarUrl());
             actorRepository.save(actorEntity);
         } else {
-            throw new BadActorUpdateException("It is not possible to change this actor (id = " + id + ") already exists in the database.");
+            throw new BadActorUpdateException(MessageFormat.format(ACTOR_ALREADY_EXISTS_MESSAGE, id));
         }
     }
 
     public List<Actor> findAllActorsSortByNumberOfEvents() {
         List<ActorEntity> actorEntityList = actorRepository.findAll();
 
-        actorEntityList.sort((a1, a2) -> {
-            int size1 = a1.getEventEntityList().size();
-            int size2 = a2.getEventEntityList().size();
-            int compare = (-1)*Integer.compare(size1, size2);
+        actorEntityList.forEach(actorEntity -> actorEntity
+                .getEventEntityList()
+                .sort(Comparator.comparing(EventEntity::getCreatedAt).reversed()));
 
-            if (compare == 0) {
-                return orderByCreatedAtDescLoginAsc(a1, a2);
-            } else {
-                return compare;
-            }
-        });
-
-        for (ActorEntity e : actorEntityList) {
-            List<EventEntity> eventEntityList = e.getEventEntityList();
-            eventEntityList.sort(Comparator.comparing(EventEntity::getCreatedAt));
-        }
+        actorEntityList.sort(Comparator
+                .comparing((ActorEntity actorEntity) -> actorEntity.getEventEntityList().size())
+                .thenComparing(actorEntity -> actorEntity.getEventEntityList().get(0).getCreatedAt())
+                .reversed()
+                .thenComparing(ActorEntity::getLogin));
 
         return actorConverter.toDomain(actorEntityList);
     }
@@ -78,8 +73,10 @@ public class GitHubApiRestActorService {
     private int orderByCreatedAtDescLoginAsc(ActorEntity a1, ActorEntity a2) {
         a1.getEventEntityList().sort((e1, e2) -> e2.getCreatedAt().compareTo(e1.getCreatedAt()));
         a2.getEventEntityList().sort((e1, e2) -> e2.getCreatedAt().compareTo(e1.getCreatedAt()));
+
         EventEntity latestEventEntity1 = a1.getEventEntityList().get(0);
         EventEntity latestEventEntity2 = a2.getEventEntityList().get(0);
+
         if (latestEventEntity1.getCreatedAt().compareTo(latestEventEntity2.getCreatedAt()) == 0) {
             return a1.getLogin().compareTo(a2.getLogin());
         } else {
