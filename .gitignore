@@ -13,6 +13,10 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+# Intellij files
+*.iml
+*.idea
+
 # Node
 
 # Logs

@@ -2,7 +2,6 @@ package com.hackerrank.github.service.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Actor {

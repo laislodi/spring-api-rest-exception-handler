@@ -11,7 +11,6 @@ import com.hackerrank.github.service.domain.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,23 +48,10 @@ public class GitHubApiRestEventService {
         eventRepository.save(eventEntity);
     }
 
-    private List<Event> findAllInList() {
-        List<EventEntity> all = eventRepository.findAll();
-        List<Event> eventList = eventConverter.toDomain(all);
-
-        eventList.sort(Comparator.comparing(Event::getId));
-
-        return eventList;
-    }
-
     public void createAllEvents(List<Event> eventList) {
         List<EventEntity> eventEntityList =  eventConverter.toEntity(eventList);
 
         for ( EventEntity e : eventEntityList) {
-//            LocalDateTime createdAt = e.getCreatedAt();
-//
-//            new Timestamp(createdAt.getYear(), createdAt.getMonthValue(), createdAt.getDayOfMonth(),
-//                    createdAt.getHour(), createdAt.getMinute(), createdAt.getSecond(), 0);
             actorRepository.save(e.getActorEntity());
             repoRepository.save(e.getRepoEntity());
             eventRepository.save(e);

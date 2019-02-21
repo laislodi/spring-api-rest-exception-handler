@@ -2,7 +2,6 @@ package com.hackerrank.github.service;
 
 import com.hackerrank.github.exception.ActorNotFoundException;
 import com.hackerrank.github.exception.BadActorUpdateException;
-import com.hackerrank.github.exception.ExistentActorException;
 import com.hackerrank.github.model.ActorEntity;
 import com.hackerrank.github.model.EventEntity;
 import com.hackerrank.github.repository.ActorRepository;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -49,7 +47,6 @@ public class GitHubApiRestActorService {
         if ( actorEntity.getLogin().equals(actor.getLogin()) && actorEntity.getId().equals(actor.getId()) ) {
             actorEntity.setAvatarUrl(actor.getAvatarUrl());
             actorRepository.save(actorEntity);
-            return;
         } else {
             throw new BadActorUpdateException("It is not possible to change this actor (id = " + id + ") already exists in the database.");
         }
@@ -73,12 +70,6 @@ public class GitHubApiRestActorService {
         for (ActorEntity e : actorEntityList) {
             List<EventEntity> eventEntityList = e.getEventEntityList();
             eventEntityList.sort(Comparator.comparing(EventEntity::getCreatedAt));
-
-            System.out.println("Actor ID: " + e.getId() +
-                    " - login: " + e.getLogin() +
-                    " - URL: " + e.getAvatarUrl() +
-                    " - Timestamp" + eventEntityList.get(eventEntityList.size() - 1).getCreatedAt() );
-            System.out.println("Number of Events: " + e.getEventEntityList().size());
         }
 
         return actorConverter.toDomain(actorEntityList);
@@ -101,11 +92,7 @@ public class GitHubApiRestActorService {
 
         actorEntityList.sort((a1, a2) -> {
             int maxStreak1 = calculateMaxStreak(a1.getEventEntityList());
-//            System.out.println(a1.getLogin());
-//            System.out.println(maxStreak1);
             int maxStreak2 = calculateMaxStreak(a2.getEventEntityList());
-//            System.out.println(a2.getLogin());
-//            System.out.println(maxStreak2);
 
             if (maxStreak1 == maxStreak2) {
                 return orderByCreatedAtDescLoginAsc(a1, a2);
@@ -162,49 +149,4 @@ public class GitHubApiRestActorService {
         repoRepository.delete(repoID);
     }
 
-
-
-    public static void main(String[] args) {
-        GitHubApiRestActorService service = new GitHubApiRestActorService(null,null,null, null);
-
-        //
-        List<ActorEntity> actorEntities = new ArrayList<>();
-        actorEntities.add(new ActorEntity(1087339L, "ktran", "https://avatars.com/1087339"));
-        actorEntities.add(new ActorEntity(1852220L, "jessicawilkinson", "https://avatars.com/1852220"));
-        List<EventEntity> e = new ArrayList<>();
-        EventEntity e1 = new EventEntity(1L, "", actorEntities.get(0), null, LocalDateTime.of(2019,8,3,14,30));
-        EventEntity e2 = new EventEntity(2L, "", actorEntities.get(1), null, LocalDateTime.of(2015,12,28, 13,0));
-        EventEntity e3 = new EventEntity(3L, "", actorEntities.get(1), null, LocalDateTime.of(2019, 4, 2, 13, 30));
-        e.add(e1);
-        e.add(e2);
-        e.add(e3);
-        ArrayList<EventEntity> list0 = new ArrayList<>();
-        list0.add(e1);
-        ArrayList<EventEntity> list1 = new ArrayList<>();
-        list1.add(e2);
-        list1.add(e3);
-        actorEntities.get(0).setEventEntityList(list0);
-        actorEntities.get(1).setEventEntityList(list1);
-
-        actorEntities.sort((a1, a2) -> {
-            int maxStreak1 = service.calculateMaxStreak(a1.getEventEntityList());
-            System.out.println(a1.getLogin());
-            System.out.println(maxStreak1);
-            int maxStreak2 = service.calculateMaxStreak(a2.getEventEntityList());
-            System.out.println(a2.getLogin());
-            System.out.println(maxStreak2);
-
-            if (maxStreak1 == maxStreak2) {
-                return service.orderByCreatedAtDescLoginAsc(a1, a2);
-            } else {
-                return maxStreak2 - maxStreak1;
-            }
-        });
-
-        System.out.println();
-
-        for (ActorEntity actorEntity : actorEntities) {
-            System.out.println(actorEntity.getLogin());
-        }
-    }
 }
