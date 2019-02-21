@@ -41,7 +41,7 @@ public class GitHubApiRestEventService {
         EventEntity e = eventRepository.findOne(event.getId());
 
         if (Objects.nonNull(e)) {
-            throw new ExistentEventException("O evento " + e.getId() + " já existe.");// 400 bad request ok
+            throw new ExistentEventException("O evento " + e.getId() + " já existe.");
         }
 
         EventEntity eventEntity = eventConverter.toEntity(event);
@@ -69,7 +69,7 @@ public class GitHubApiRestEventService {
         eventList = eventConverter.toDomain(eventEntityList);
 
         if (eventEntityList.size() == 0) {
-            throw new EventNotFoundException("The actor id = " + actorID + " can not be found."); // 404 not found ok
+            throw new EventNotFoundException("The actor id = " + actorID + " can not be found.");
         }
         return eventList;
     }

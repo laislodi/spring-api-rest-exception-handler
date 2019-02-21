@@ -40,6 +40,4 @@ public class AppExceptionHandler {
     public MyError catchNotFound(ActorNotFoundException e) {
         return new MyError(e.getMessage(), HttpStatus.NOT_FOUND.value());
     }
-    //
-
 }

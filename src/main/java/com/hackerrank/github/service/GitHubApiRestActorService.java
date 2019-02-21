@@ -125,9 +125,8 @@ public class GitHubApiRestActorService {
                 streak++;
             } else if (localDate.isAfter(previousLocalDate.plusDays(1))) {
                 streak = 1;
-            } /*else if (localDate == previousLocalDate) {
-                continue;
-            }*/
+            }
+
             if (streak > maxStreak) {
                 maxStreak = streak;
             }
