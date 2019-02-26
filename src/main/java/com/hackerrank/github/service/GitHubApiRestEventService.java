@@ -26,10 +26,6 @@ public class GitHubApiRestEventService {
         this.eventConverter = eventConverter;
     }
 
-//    public List<Event> findEventEntityByActorEntity_IdOrderByCreatedAt(Long actorId) {
-//        return eventConverter.toDomain(eventRepository.findEventEntityByActorEntity_IdOrderByCreatedAt(actorId));
-//    }
-
     public void deleteAllEvents() {
         eventRepository.deleteAll();
     }

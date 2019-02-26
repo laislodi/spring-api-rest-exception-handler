@@ -55,32 +55,6 @@ public class GitHubApiRestActorService {
         return actorConverter.toDomain(actorRepository.allActorsOrderByNumberOfEventsDescMaxCreatedAtDescLoginAsc());
     }
 
-    // Ordenado no backend
-    public List<Actor> findAllActorsSortByNumberOfEvents2() {
-        /**
-         * Select all the elements from ActorEntity (having an event list or not - left join)
-         *
-         * select a from ActorEntity a
-         *   left join a.events e
-         *  group by a.id, a.login, a.avatarUrl
-         *  order by count(e.id) desc, max(e.createdAt) desc, a.login asc
-         *
-         * */
-        List<ActorEntity> actorEntityList = actorRepository.findAll();
-
-        actorEntityList.forEach(actorEntity -> actorEntity
-                .getEventEntityList()
-                .sort(Comparator.comparing(EventEntity::getCreatedAt).reversed()));
-
-        actorEntityList.sort(Comparator
-                .comparing((ActorEntity actorEntity) -> actorEntity.getEventEntityList().size())
-                .thenComparing(actorEntity -> actorEntity.getEventEntityList().get(0).getCreatedAt())
-                .reversed()
-                .thenComparing(ActorEntity::getLogin));
-
-        return actorConverter.toDomain(actorEntityList);
-    }
-
     public List<Actor> findAllActorsByStreak() {
         List<ActorEntity> actorEntityList = actorRepository.findAll();
 

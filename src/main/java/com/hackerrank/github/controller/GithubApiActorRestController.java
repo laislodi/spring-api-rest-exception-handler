@@ -2,7 +2,6 @@ package com.hackerrank.github.controller;
 
 import com.hackerrank.github.service.GitHubApiRestActorService;
 import com.hackerrank.github.service.domain.Actor;
-import com.hackerrank.github.service.domain.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

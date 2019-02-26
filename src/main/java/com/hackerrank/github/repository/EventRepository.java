@@ -17,9 +17,6 @@ public interface EventRepository extends org.springframework.data.repository.Cru
     @Query("select e from EventEntity e inner join fetch e.actorEntity a inner join fetch e.repoEntity where a.id = :actorId order by a.id")
     List<EventEntity> findByActorId(@Param("actorId") Long actorID);
 
-//    @Query("select e from EventEntity e inner join e.actorEntity a where  = order by e.createdAt desc ")
-//    List<EventEntity> findEventEntityByActorEntity_IdOrderByCreatedAt(Long actorId);
-
     EventEntity findOne(Long id);
 
     void delete(Long id);

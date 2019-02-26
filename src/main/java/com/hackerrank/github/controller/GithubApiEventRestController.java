@@ -3,7 +3,6 @@ package com.hackerrank.github.controller;
 import com.hackerrank.github.service.GitHubApiRestEventService;
 import com.hackerrank.github.service.domain.Event;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +17,6 @@ public class GithubApiEventRestController {
     public GithubApiEventRestController(GitHubApiRestEventService gitHubApiRestEventService) {
         this.gitHubApiRestEventService = gitHubApiRestEventService;
     }
-
-//    @GetMapping("/eventOrdered")
-//    public List<Event> findEventEntityByActorEntity_IdOrderByCreatedAt(@Param("actorID") Long actorID) {
-//        return gitHubApiRestEventService.findEventEntityByActorEntity_IdOrderByCreatedAt(actorID);
-//    }
 
     @DeleteMapping("/erase")
     @ResponseBody

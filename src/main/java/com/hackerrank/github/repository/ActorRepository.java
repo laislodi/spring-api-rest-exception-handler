@@ -13,9 +13,6 @@ public interface ActorRepository extends org.springframework.data.repository.Cru
 
     List<ActorEntity> findAll();
 
-//    @Query("select a from ")
-//    List<ActorEntity> findAllActorsWithOrderedEventList();
-
     void deleteAll();
 
     void delete(Long actorID);
