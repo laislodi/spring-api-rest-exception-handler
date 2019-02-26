@@ -21,8 +21,6 @@ public class EventEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     private RepoEntity repoEntity;
     @Column(name = "CREATED_AT")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
     public EventEntity() {

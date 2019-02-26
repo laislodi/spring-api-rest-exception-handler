@@ -16,7 +16,7 @@ import java.util.List;
 public class GitHubApiRestEventService {
 
     private static final String ACTOR_NOT_FOUND_MESSAGE = "The actor id = {0} can not be found.";
-    private static final String EVENTO_EXISTE_MESSAGE = "O evento {0} já existe.";
+    private static final String EXISTING_EVENT = "The event {0} already exists.";
     private final EventRepository eventRepository;
     private final EventConverter eventConverter;
 
@@ -26,13 +26,17 @@ public class GitHubApiRestEventService {
         this.eventConverter = eventConverter;
     }
 
+//    public List<Event> findEventEntityByActorEntity_IdOrderByCreatedAt(Long actorId) {
+//        return eventConverter.toDomain(eventRepository.findEventEntityByActorEntity_IdOrderByCreatedAt(actorId));
+//    }
+
     public void deleteAllEvents() {
         eventRepository.deleteAll();
     }
 
     public void saveEvent(Event event) {
         if (eventRepository.exists(event.getId())) {
-            throw new ExistentEventException(MessageFormat.format(EVENTO_EXISTE_MESSAGE, event.getId()));
+            throw new ExistentEventException(MessageFormat.format(EXISTING_EVENT, event.getId()));
         }
 
         EventEntity eventEntity = eventConverter.toEntity(event);
